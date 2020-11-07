@@ -1,5 +1,5 @@
 CREATE table Pokemon (
-    pokename VARCHAR(25) PRIMARY KEY,
+    pokeName VARCHAR(25) PRIMARY KEY,
     isCaptured INTEGER,
     weight INTEGER,
     height INTEGER,
@@ -11,6 +11,21 @@ CREATE table Pokemon (
     locationIndex INTEGER
 )
 
+CREATE table Evolution (
+    evoName VARCHAR(25) PRIMARY KEY,
+    pokeName VARCHAR(25),
+    description VARCHAR(25)
+)
+
+CREATE table Stats (
+    pokeName VARCHAR(25) PRIMARY KEY,
+    attack INTEGER,
+    defense INTEGER,
+    hp INTEGER,
+    specialAttack INTEGER,
+    specialDefense INTEGER,
+    speed INTEGER
+)
 
 
 
