@@ -39,5 +39,10 @@ CREATE table Move (
     type VARCHAR(25),
 )
 
+CREATE table Evolution (
+    evolutionName VARCHAR(25) PRIMARY KEY,
+    name CHAR(25),
+    description VARCHAR(25)
+)
 
 
