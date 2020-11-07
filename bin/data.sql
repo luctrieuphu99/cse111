@@ -27,5 +27,12 @@ CREATE table Stats (
     speed INTEGER
 )
 
+CREATe table Type (
+    type VARCHAR(25),
+    weak VARCHAR(25),
+    effective VARCHAR(25),
+    vulnerable VARCHAR(25), 
+)
+
 
 
