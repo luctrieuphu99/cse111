@@ -6,7 +6,7 @@ values
 ('Charmander',8.5,0.6,'Lizard',1,'both','fire',NULL,2),
 ('Squirtle',9.0,0.5,'Tiny Turtle',1,'both','water',NULL,3),
 ('Caterpie',2.9,0.3,'Worm',1,'both','bug',NULL,4),
-('Weedle',100.0,2.0,'Hairy Bug',1,'both','bug','poison',5),
+('Weedle',3.2,0.3,'Hairy Bug',1,'both','bug','poison',5),
 ('Pidgey',1.8,0.3,'Tiny Bird',1,'both','normal','flying',6),
 ('Rattata',3.5,0.3,'Mouse',1,'both','normal','flying',7),
 ('Spearow',2.0,0.3,'Tiny Bird',1,'both','normal','flying',8),
@@ -86,15 +86,17 @@ VALUES
 (49,"Rock Tunnel", "a naturally formed underground tunnel."),
 (50,"Diglett's Cave", "a long tunnel dug by wild Diglett and Dugtrio in Kanto");
 
-insert into LivingLocation (locationid, name, pokeName)
+insert into pokeLocation (locationid, name, pokeName)
 select Location.locationId, Location.name, Pokemon.pokeName
 from Location, Pokemon
 where Location.locationId = Pokemon.locationIndex;
 
-INSERT INTO Trainer (ownerId, name, nickName, address)
+INSERT INTO Trainer (ownerId, name, nickName, locationId)
 VALUES 
-(1, 'Gabriel Ramirez', 'Gabe', 'San Jose'),
-(2, 'Phu Luc', 'Phu', 'San Francisco');
+(1, 'Gabriel Ramirez', 'Gabe', 1),
+(2, 'Phu Luc', 'Phu', 2),
+(3, 'Brock', 'rook', 3),
+(4, 'Misty', 'misses', 4);
 
 INSERT INTO Evolution (evoName, pokeName, description)
 VALUES ('Ivysaur', 'Bulbasaur', 'plant / lizard'),
@@ -267,38 +269,9 @@ VALUES ('Bulbasaur', 49, 49, 45, 65, 65, 45),
 ('Geodude', 80, 100, 40, 30, 30, 20);
 -------- https://pokemondb.net/pokedex/all
 
-select pokeName, Type.type, Move.move
-from Pokemon, Type, Move
-where Move.type = Type.type
-and Type.type = Pokemon.type1
+insert into trainerLocation (trainerName, locationName, locationId)
+select Trainer.name, Location.name, Location.locationId
+from Trainer, Location
+where Trainer.locationId = Location.locationId;
 
 
--- 1. select all pokemon that got captured
-select pokename
-from Pokemon
-where isCaptured = 'yes';
-
--- 2. select the pokemon with max weight
-select pokename
-from Pokemon
-where weight in (select max(weight) from Pokemon);
-
--- 3. select the pokemon with matching name
-select *
-from Pokemon
-where pokeman = 'Pikachu';
-
--- 4. select pokemon with the matching type
-select pokename
-from Pokemon, Type
-where (Pokemon.type1 = Type.type
-    or pokemon.type2 = Type.type)
-    and Type.type = 'poison';
-
--- 5. search the previous evolution of the matching name
-select Evolution.pokename
-from Evolution, Pokemon
-where Evolution.evoName = 'Ivysuar'
-and Pokemon.pokename = Evolution.pokename;
-
--- 6.
