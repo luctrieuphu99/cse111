@@ -134,24 +134,26 @@ VALUES ('Ivysaur', 'Bulbasaur', 'plant / lizard'),
 ('Golduck', 'Psyduck', 'gold / duck');
 
 INSERT INTO Type (type, weak, effective, vulnerable)
-VALUES ('normal', '', '', ''),
-('fire', '', '', ''),
-('water', '', '', ''),
-('electric', '', '', ''),
-('grass', '', '', ''),
-('ice', '', '', ''),
-('fighting', '', '', ''),
-('poison', '', '', ''),
-('ground', '', '', ''),
-('flying', '', '', ''),
-('psychic', '', '', ''),
-('bug', '', '', ''),
-('rock', '', '', ''),
-('ghost', '', '', ''),
-('dragon', '', '', ''),
-('dark', '', '', ''),
-('steel', '', '', ''),
-('fairy', '', '', '');
+VALUES ('normal', 'ghost', NULL, 'fighting'),
+('fire', 'water', 'grass', 'water'),
+('water', 'grass', 'fire', 'electric'),
+('electric', 'ground', 'water', 'ground'),
+('grass', 'fire', 'water', 'fire'),
+('ice', 'fire', 'grass', 'fire'),
+('fighting', 'ghost', 'normal', 'flying'),
+('poison', 'steel', 'grass', 'ground'),
+('ground', 'flying', 'fire', 'water'),
+('flying', 'rock', 'grass', 'electric'),
+('psychic', 'dark', 'fighting', 'bug'),
+('bug', 'fighting', 'grass', 'fire'),
+('rock', 'fighting', 'fire', 'water'),
+('ghost', 'normal', 'psychic', 'ghost'),
+('dragon', 'fairy', 'dragon', 'ice'),
+('dark', 'dark', 'psychic', 'fighting'),
+('steel', 'water', 'ice', 'fire'),
+('fairy', 'poison', 'fighting', 'poison');
+
+
 
 INSERT INTO Move (move, type)
 VALUES ('Absorb', 'grass'),
