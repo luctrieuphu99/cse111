@@ -66,7 +66,6 @@ CREATE TABLE trainerLocation(
 );
 
 CREATE TABLE Trainer (
-    ownerId INTEGER PRIMARY KEY,
     name VARCHAR(25) PRIMARY KEY,
     nickName VARCHAR(25),
     locationId integer

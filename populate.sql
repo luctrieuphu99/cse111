@@ -105,12 +105,12 @@ select Location.locationId, Location.name, Pokemon.pokeName
 from Location, Pokemon
 where Location.locationId = Pokemon.locationIndex;
 
-INSERT INTO Trainer (ownerId, name, nickName, locationId)
+INSERT INTO Trainer (name, nickName, locationId)
 VALUES 
-(1, 'Gabriel Ramirez', 'Gabe', 1),
-(2, 'Phu Luc', 'Phu', 2),
-(3, 'Brock', 'rook', 3),
-(4, 'Misty', 'misses', 4);
+('Gabriel Ramirez', 'Gabe', 1),
+('Phu Luc', 'Phu', 2),
+('Brock', 'rook', 3),
+('Misty', 'misses', 4);
 
 INSERT INTO Evolution (evoName, pokeName, description)
 VALUES ('Ivysaur', 'Bulbasaur', 'plant / lizard'),
