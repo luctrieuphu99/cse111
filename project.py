@@ -41,14 +41,25 @@ def pokemonList(_conn):
         _conn.rollback()
         print(e)
 
-def findPokemonWithSpecies(_conn, _species):
+def findPokemonWithSpecies(_conn, _species, _type):
     try:
-        sql = """SELECT *
-                from Pokemon
-                where species = ?
-                """
+        if _type == "all":
+            sql = """SELECT *
+                    from Pokemon 
+                    where species = ?"""
+            args = [_species]
+        else:
+            sql = """SELECT *
+                    from Pokemon
+                    where species = ?
+                    and (type1 = ? or type2 = ?)"""
+            args = [_species,_type,_type]
         cur = _conn.cursor()
-        args = [_species]
+        cur.execute(sql, args)
+        row = cur.fetchone()
+        if row == None:
+            print("There are no results for this query")
+            return
         cur.execute(sql, args)
         mytable = from_db_cursor(cur)
         print(mytable)
@@ -88,79 +99,108 @@ def findPokemon(_conn, _pokemon, _command):
         cur = _conn.cursor()
         args = [_pokemon]
         cur.execute(sql, args)
+        row = cur.fetchone()
+        if row == None:
+            print("There are no results for this query")
+            return
+        cur.execute(sql, args)
         mytable = from_db_cursor(cur)
-        temp = mytable
         print(mytable)
         
     except Error as e:
         _conn.rollback()
         print(e)
 
-# def statsList(_conn):
-#     try:
-#         # saving the the maker of the model
-#         if (_command == "yes"):
-#             sql = """SELECT Pokemon.pokeName, 
-#                             weight, 
-#                             height, 
-#                             species, 
-#                             gen, 
-#                             gender, 
-#                             type1, 
-#                             type2, 
-#                             locationIndex, 
-#                             attack, 
-#                             defense,
-#                             hp,
-#                             specialAttack,
-#                             specialDefense,
-#                             speed
-#                     from Pokemon, Stats
-#                     where Pokemon.pokeName = ?
-#                     and Stats.pokeName = Pokemon.pokeName
-#                 """
-#         else:
-#             sql = """SELECT *
-#                     from Pokemon
-#                     where pokeName = ?
-#                     """
-#         cur = _conn.cursor()
-#         args = [_pokemon]
-#         cur.execute(sql, args)
-#         mytable = from_db_cursor(cur)
-#         temp = mytable
-    
-#         print print("row: " + row)
-#         print(temp)
+def statsList(_conn):
+    try:
+        sql= """SELECT *
+                from Stats
+                """
+        cur = _conn.cursor()
+        cur.execute(sql)
+        mytable = from_db_cursor(cur)
+        print(mytable)
         
-#     except Error as e:
-#         _conn.rollback()
-#         print(e)
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
+def addTrainer(_conn,_name,_nick,_loc):
+    try:
+        sql= """INSERT into Trainer
+                VALUES (?,?,?) 
+                """
+        args = [_name,_nick,_loc]
+        cur = _conn.cursor()        
+        cur.execute(sql, args)
+        sql= """SELECT * from Trainer
+                """
+        cur.execute(sql)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+        
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
+def deleteTrainer(_conn,_name):
+    try:
+        sql= """DELETE from Trainer
+                WHERE name = ?
+                """
+        args = [_name]
+        cur = _conn.cursor()
+        cur.execute(sql, args)
+        sql= """SELECT * from Trainer
+                """
+        cur.execute(sql)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
+def evolution(_conn,_name,_command):
+    try:
+        if _command == "evolve":
+            sql= """SELECT *
+                    FROM Evolution
+                    WHERE pokeName = ?
+                    """
+        elif _command == "devolve":
+            sql= """SELECT *
+                    FROM Evolution
+                    WHERE evoName = ?
+                    """
+        else:
+            print("Invalid command")
+            return
+        args = [_name]
+        cur = _conn.cursor()
+        cur.execute(sql, args)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+    except Error as e:
+        _conn.rollback()
+        print(e)
 
 
-# MENU = """
-# -------------- Pokedex ---------------
 
-# 1) Find pokemon
-# 2) do something
-# 3) whatever 
-
-# """
 MENU = """ 
                                                   
-                 ...*/////////*..                   Please choose one of the following option:
-            ..///////////////////////.              1) Pokemon List
-         ./@@@@@@@@/////////////////////..          2) Find pokemon
-       .&@@@@@@@@@@////////////////////////.        3) Find pokemon with the same species 
-     .//@@@@@@@@@@///////////////////////////.      4) Pokemon Stats
-    .///@@@@@@@&///////////.*****,.///////////.     5) Adding/Delete Trainer
-   .////////////////////.**,#@@@@%,***/////////.    6) 
-  .////////////...********@&@@@@@@%@**./////////. 
-  .///,.*****************.@#@@@@@@&@.*******.///. 
-  .,,**************.....**.@&@@@@#@.************. 
-  .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****. 
-  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(  
-   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.  
+                 ...*/////////*..                       Please choose one of the following options:
+            ..///////////////////////.                  1)  Pokemon List
+         ./@@@@@@@@/////////////////////..              2)  Stats List
+       .&@@@@@@@@@@////////////////////////.            3)  Find pokemon (show stats?)
+     .//@@@@@@@@@@///////////////////////////.          4)  Find pokemon with the species (type?) 
+    .///@@@@@@@&///////////.*****,.///////////.         5)  Add / Delete Trainer (location id)(nickName)
+   .////////////////////.**,#@@@@%,***/////////.        6)  Pokemon Evolution (previous/nextOne)
+  .////////////...********@&@@@@@@%@**./////////.       7)  Find number of move of type? (all/specific)
+  .///,.*****************.@#@@@@@@&@.*******.///.       8)  Show all pokemons in the location based on locationId (all/specific) 
+  .,,**************.....**.@&@@@@#@.************.       9)  Find the strongest pokemon in the selected type?
+  .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****.       10) Exit
+  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(         
+   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.         
     .#########&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.   
       .##########@@@@@@@@@@@@@@@@@@@@@@@@@@%.     
         .###########&@@@@@@@@@@@@@@@@@@@##.       
@@ -168,32 +208,47 @@ MENU = """
              ..*###################,.             
                     ...........                   
 
-Your Input: """
-
-
+Your Input: """ 
 
 def main():
     database = r"data.sqlite"
-
     # create a database connection
     conn = openConnection(database)
     #findPokemon(conn, 'Ekans', 'no')
     with conn:
-        while (user_input := input(MENU)) != "7":
+        while (user_input := input(MENU)) != "10":
             if user_input == '1':
                 pokemonList(conn)
             elif (user_input == '2'):
+                statsList(conn)
+            elif (user_input == '3'):
                 pokemon = input("Pokemon Name: ")
                 command = input("Show Stats (yes/no): ")
                 findPokemon(conn, pokemon, command)
-            elif (user_input == '3'):
-                a0 = input("Species Name: ")
-                findPokemonWithSpecies(conn, a0)
-            #elif (user_input == '4'):
-                #statsList(conn)
+            elif (user_input == '4'):
+                a0 = input("Species Name (all/specific): ")
+                a1 = input("Type: ")
+                findPokemonWithSpecies(conn, a0, a1)
+            elif (user_input == '5'):
+                a0 = input("add/delete: ")
+                if a0 == "add":
+                    a1 = input("Trainer Name: ")
+                    a2 = input("Nickname: ")
+                    a3 = input("LocationID: ")
+                    addTrainer(conn, a1, a2, a3)
+                elif a0 == "delete":
+                    a1 = input("Trainer Name: ")
+                    deleteTrainer(conn,a1)
+            elif (user_input == '6'):
+                a0 = input("Pokemon Name: ")
+                a1 = input("evolve/devolve: ")
+                evolution(conn,a0,a1)
+            # elif (user_input == '7'):
+
+            # elif (user_input == '8'):
+            # elif (user_input == '9'):  
 
 
-            
     closeConnection(conn, database)
 
 if __name__ == '__main__':
