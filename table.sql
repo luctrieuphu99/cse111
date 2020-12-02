@@ -1,6 +1,18 @@
+DROP table Pokemon;
+--DROP table Ability;
+Drop table Evolution;
+drop table Move;
+drop table pokeLocation;
+drop table Stats;
+drop table Trainer;
+drop table Type;
+drop table Location;
+drop table trainerLocation;
+
+
 CREATE TABLE Pokemon (
     pokeName VARCHAR(25) PRIMARY KEY,
-    isCaptured INTEGER,
+    --isCaptured INTEGER,
     weight INTEGER,
     height INTEGER,
     species VARCHAR(25),
@@ -31,36 +43,43 @@ CREATE TABLE Type (
     type VARCHAR(25),
     weak VARCHAR(25),
     effective VARCHAR(25),
-    vulnerable VARCHAR(25), 
+    vulnerable VARCHAR(25)
 );
 
 CREATE TABLE Move (
     move VARCHAR(25) PRIMARY KEY,
-    type VARCHAR(25),
+    type VARCHAR(25)
 );
 
-CREATE TABLE Ability (
-    abilityName CHAR(25),
-    type CHAR(25),
-    move1 CHAR(25),
-    move2 CHAR(25)
-); 
+-- CREATE TABLE Ability (
+--     pokeName CHAR(25),
+--     type1 CHAR(25),
+--     type2 CHAR(25),
+--     move1 CHAR(25),
+--     move2 CHAR(25)
+-- ); 
+
+CREATE TABLE trainerLocation(
+    trainerName VARCHAR(25),
+    locationName VARCHAR(25),
+    locationId integer
+);
 
 CREATE TABLE Trainer (
     ownerId INTEGER PRIMARY KEY,
     name VARCHAR(25),
     nickName VARCHAR(25),
-    address CHAR(25)
+    locationId integer
 ); 
 
 CREATE TABLE Location (
     locationId INTEGER PRIMARY KEY,
     name VARCHAR(25),
-    comment VARCHAR(25),
-    danger CHAR(25)
+    comment VARCHAR(25)
 ); 
 
-CREATE TABLE LivingLocation (
-    locationId INTEGER PRIMARY KEY,
-    pokeName VARCHAR(25)
+CREATE TABLE pokeLocation (
+    pokeName VARCHAR(25),
+    name VARCHAR(25),
+    locationId INTEGER
 ); 
