@@ -88,8 +88,12 @@ def findPokemon(_conn, _pokemon, _command):
         cur = _conn.cursor()
         args = [_pokemon]
         cur.execute(sql, args)
+        row = cur.fetchone()
+        if row == None:
+            print("There are no results for this query")
+            return
+        cur.execute(sql, args)
         mytable = from_db_cursor(cur)
-        temp = mytable
         print(mytable)
         
     except Error as e:
@@ -137,30 +141,21 @@ def findPokemon(_conn, _pokemon, _command):
 #         _conn.rollback()
 #         print(e)
 
-
-# MENU = """
-# -------------- Pokedex ---------------
-
-# 1) Find pokemon
-# 2) do something
-# 3) whatever 
-
-# """
 MENU = """ 
                                                   
-                 ...*/////////*..                   Please choose one of the following option:
-            ..///////////////////////.              1) Pokemon List
-         ./@@@@@@@@/////////////////////..          2) Find pokemon
-       .&@@@@@@@@@@////////////////////////.        3) Find pokemon with the same species 
-     .//@@@@@@@@@@///////////////////////////.      4) Pokemon Stats
-    .///@@@@@@@&///////////.*****,.///////////.     5) Adding/Delete Trainer
-   .////////////////////.**,#@@@@%,***/////////.    6) 
-  .////////////...********@&@@@@@@%@**./////////. 
-  .///,.*****************.@#@@@@@@&@.*******.///. 
-  .,,**************.....**.@&@@@@#@.************. 
-  .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****. 
-  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(  
-   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.  
+                 ...*/////////*..                       Please choose one of the following option:
+            ..///////////////////////.                  1)  Pokemon List
+         ./@@@@@@@@/////////////////////..              2)  Stats List
+       .&@@@@@@@@@@////////////////////////.            3)  Find pokemon (show stats?)
+     .//@@@@@@@@@@///////////////////////////.          4)  Find pokemon with the species (type?)(max hp?) 
+    .///@@@@@@@&///////////.*****,.///////////.         5)  Adding/Delete Trainer (location id)(nickName)
+   .////////////////////.**,#@@@@%,***/////////.        6)  Pokemon Evolution (previous/nextOne)
+  .////////////...********@&@@@@@@%@**./////////.       7)  Find number of move of type? (all/specific)
+  .///,.*****************.@#@@@@@@&@.*******.///.       8)  Show all pokemons in the location based on locationId (all/specific) 
+  .,,**************.....**.@&@@@@#@.************.       9)  Find the strongest pokemon in the selected type?
+  .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****.       10) Exit
+  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(         
+   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.         
     .#########&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.   
       .##########@@@@@@@@@@@@@@@@@@@@@@@@@@%.     
         .###########&@@@@@@@@@@@@@@@@@@@##.       
@@ -168,9 +163,7 @@ MENU = """
              ..*###################,.             
                     ...........                   
 
-Your Input: """
-
-
+Your Input: """ 
 
 def main():
     database = r"data.sqlite"
@@ -183,14 +176,16 @@ def main():
             if user_input == '1':
                 pokemonList(conn)
             elif (user_input == '2'):
+                statsList()
+                
+            
+            elif (user_input == '3'):
                 pokemon = input("Pokemon Name: ")
                 command = input("Show Stats (yes/no): ")
                 findPokemon(conn, pokemon, command)
-            elif (user_input == '3'):
+            elif (user_input == '4'):
                 a0 = input("Species Name: ")
                 findPokemonWithSpecies(conn, a0)
-            #elif (user_input == '4'):
-                #statsList(conn)
 
 
             

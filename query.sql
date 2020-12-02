@@ -81,7 +81,7 @@ and Stats.pokeName = Pokemon.pokeName
 and specialAttack in (select max(specialAttack)
                         from Stats
                         )
-limit 2
+--limit 2
 
 -- 12. insert the new trainer
 update Trainer 
