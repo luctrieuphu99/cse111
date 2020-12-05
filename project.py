@@ -211,6 +211,123 @@ def findMoveWithType(_conn, _type):
             cur.execute(sql)
         else:
             cur.execute(sql, args)
+
+def addTrainer(_conn,_name,_nick,_loc):
+    try:
+        sql= """INSERT into Trainer
+                VALUES (?,?,?) 
+                """
+        args = [_name,_nick,_loc]
+        cur = _conn.cursor()        
+        cur.execute(sql, args)
+        sql= """SELECT * from Trainer
+                """
+        cur.execute(sql)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+        
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
+def findPokemonWithLocation(_conn, _locationID):
+    try:
+        args = [_locationID]
+        if _locationID == "all":
+            sql = """SELECT 
+                        type, count(move)
+                    FROM Move
+                    GROUP BY type;"""
+            cur = _conn.cursor()
+            cur.execute(sql)
+        else:
+            sql = """SELECT 
+                        type, count(move)
+                    FROM Move
+                    WHERE type = ?
+                    GROUP BY type;"""
+            cur = _conn.cursor()
+            cur.execute(sql, args)
+        
+        row = cur.fetchone()
+        if row == None:
+            print("There are no results for this query")
+            return
+        if _locationID == "all":
+            cur.execute(sql)
+        else:
+            cur.execute(sql, args)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+        
+def deleteTrainer(_conn,_name):
+    try:
+        sql= """DELETE from Trainer
+                WHERE name = ?
+                """
+        args = [_name]
+        cur = _conn.cursor()
+        cur.execute(sql, args)
+        sql= """SELECT * from Trainer
+                """
+        cur.execute(sql)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
+def evolution(_conn,_name,_command):
+    try:
+        if _command == "evolve":
+            sql= """SELECT *
+                    FROM Evolution
+                    WHERE pokeName = ?
+                    """
+        elif _command == "devolve":
+            sql= """SELECT *
+                    FROM Evolution
+                    WHERE evoName = ?
+                    """
+        else:
+            print("Invalid command")
+            return
+        args = [_name]
+        cur = _conn.cursor()
+        cur.execute(sql, args)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
+def findMoveWithType(_conn, _type):
+    try:
+        args = [_type]
+        if _type == "all":
+            sql = """SELECT 
+                        type, count(move)
+                    FROM Move
+                    GROUP BY type;"""
+            cur = _conn.cursor()
+            cur.execute(sql)
+        else:
+            sql = """SELECT 
+                        type, count(move)
+                    FROM Move
+                    WHERE type = ?
+                    GROUP BY type;"""
+            cur = _conn.cursor()
+            cur.execute(sql, args)
+        
+        row = cur.fetchone()
+        if row == None:
+            print("There are no results for this query")
+            return
+        if _type == "all":
+            cur.execute(sql)
+        else:
+            cur.execute(sql, args)
         mytable = from_db_cursor(cur)
         print(mytable)
         
@@ -265,7 +382,7 @@ def findStrongestPokemon(_conn, _type):
         else:
             sql = """select Pokemon.pokeName, max(attack + defense)
             from Pokemon, Stats
-            where (type1 = ? or type2 = ?
+            where (type1 = ? or type2 = ?)
             and Stats.pokeName = Pokemon.pokeName;"""
             cur = _conn.cursor()
             cur.execute(sql, args)
@@ -298,15 +415,14 @@ MENU = """
   .///,.*****************.@#@@@@@@&@.*******.///.       8)  Show all pokemons in the location based on locationId (all/specific) 
   .,,**************.....**.@&@@@@#@.************.       9)  Find the strongest pokemon in the selected type?
   .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****.       10) Exit
-  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(         
-   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.         
+  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(        
+   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.        
     .#########&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.   
       .##########@@@@@@@@@@@@@@@@@@@@@@@@@@%.     
         .###########&@@@@@@@@@@@@@@@@@@@##.       
           .*#################%%########,.         
              ..*###################,.             
                     ...........                   
-
 Your Input: """ 
 
 def main():

@@ -51,14 +51,6 @@ CREATE TABLE Move (
     type VARCHAR(25)
 );
 
--- CREATE TABLE Ability (
---     pokeName CHAR(25),
---     type1 CHAR(25),
---     type2 CHAR(25),
---     move1 CHAR(25),
---     move2 CHAR(25)
--- ); 
-
 CREATE TABLE trainerLocation(
     trainerName VARCHAR(25),
     locationName VARCHAR(25),
@@ -66,8 +58,7 @@ CREATE TABLE trainerLocation(
 );
 
 CREATE TABLE Trainer (
-    ownerId INTEGER PRIMARY KEY,
-    name VARCHAR(25),
+    name VARCHAR(25) PRIMARY KEY,
     nickName VARCHAR(25),
     locationId integer
 ); 
@@ -80,6 +71,6 @@ CREATE TABLE Location (
 
 CREATE TABLE pokeLocation (
     pokeName VARCHAR(25),
-    name VARCHAR(25),
+    locationName VARCHAR(25),
     locationId INTEGER
 ); 
