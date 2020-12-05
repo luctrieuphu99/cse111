@@ -184,30 +184,128 @@ def evolution(_conn,_name,_command):
         _conn.rollback()
         print(e)
 
+def findMoveWithType(_conn, _type):
+    try:
+        args = [_type]
+        if _type == "all":
+            sql = """SELECT 
+                        type, count(move)
+                    FROM Move
+                    GROUP BY type;"""
+            cur = _conn.cursor()
+            cur.execute(sql)
+        else:
+            sql = """SELECT 
+                        type, count(move)
+                    FROM Move
+                    WHERE type = ?
+                    GROUP BY type;"""
+            cur = _conn.cursor()
+            cur.execute(sql, args)
+        
+        row = cur.fetchone()
+        if row == None:
+            print("There are no results for this query")
+            return
+        if _type == "all":
+            cur.execute(sql)
+        else:
+            cur.execute(sql, args)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+        
+    except Error as e:
+        _conn.rollback()
+        print(e)
 
+def findPokemonWithLocation(_conn, _locationID):
+    try:
+        args = [_locationID]
+        if _locationID == "all":
+            sql = """SELECT 
+                        type, count(move)
+                    FROM Move
+                    GROUP BY type;"""
+            cur = _conn.cursor()
+            cur.execute(sql)
+        else:
+            sql = """SELECT 
+                        type, count(move)
+                    FROM Move
+                    WHERE type = ?
+                    GROUP BY type;"""
+            cur = _conn.cursor()
+            cur.execute(sql, args)
+        
+        row = cur.fetchone()
+        if row == None:
+            print("There are no results for this query")
+            return
+        if _locationID == "all":
+            cur.execute(sql)
+        else:
+            cur.execute(sql, args)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+        
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
+def findStrongestPokemon(_conn, _type):
+    try:
+        args = [_type, _type]
+        if _type == "all":
+            sql = """select Pokemon.pokeName, max(attack + defense)
+                    from Pokemon, Stats
+                    where type2 = 'NULL'
+                    and Stats.pokeName = Pokemon.pokeName;"""
+            cur = _conn.cursor()
+            cur.execute(sql)
+        else:
+            sql = """select Pokemon.pokeName, max(attack + defense)
+            from Pokemon, Stats
+            where (type1 = ? or type2 = ?)
+            and Stats.pokeName = Pokemon.pokeName;"""
+            cur = _conn.cursor()
+            cur.execute(sql, args)
+        
+        row = cur.fetchone()
+        if row == None:
+            print("There are no results for this query")
+            return
+        if _type == "all":
+            cur.execute(sql)
+        else:
+            cur.execute(sql, args)
+        mytable = from_db_cursor(cur)
+        print(mytable)
+        
+    except Error as e:
+        _conn.rollback()
+        print(e)
 
 MENU = """ 
                                                   
-                 ...*/////////*..                       Please choose one of the following option:
+                 ...*/////////*..                       Please choose one of the following options:
             ..///////////////////////.                  1)  Pokemon List
          ./@@@@@@@@/////////////////////..              2)  Stats List
        .&@@@@@@@@@@////////////////////////.            3)  Find pokemon (show stats?)
      .//@@@@@@@@@@///////////////////////////.          4)  Find pokemon with the species (type?) 
-    .///@@@@@@@&///////////.*****,.///////////.         5)  Adding/Delete Trainer (location id)(nickName)
+    .///@@@@@@@&///////////.*****,.///////////.         5)  Add / Delete Trainer (location id)(nickName)
    .////////////////////.**,#@@@@%,***/////////.        6)  Pokemon Evolution (previous/nextOne)
   .////////////...********@&@@@@@@%@**./////////.       7)  Find number of move of type? (all/specific)
   .///,.*****************.@#@@@@@@&@.*******.///.       8)  Show all pokemons in the location based on locationId (all/specific) 
   .,,**************.....**.@&@@@@#@.************.       9)  Find the strongest pokemon in the selected type?
-  .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****.       10) Exit
-  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(         
-   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.         
+  .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****.       10) 
+  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(        11) 
+   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.        12) 
     .#########&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.   
       .##########@@@@@@@@@@@@@@@@@@@@@@@@@@%.     
         .###########&@@@@@@@@@@@@@@@@@@@##.       
           .*#################%%########,.         
              ..*###################,.             
                     ...........                   
-
 Your Input: """ 
 
 def main():
@@ -243,9 +341,23 @@ def main():
                 a0 = input("Pokemon Name: ")
                 a1 = input("evolve/devolve: ")
                 evolution(conn,a0,a1)
-            # elif (user_input == '7'):
-            # elif (user_input == '8'):
-            # elif (user_input == '9'):  
+            elif (user_input == '7'):
+                a0 = input("Move Name (all/specific): ")
+                if a0 == "all":
+                    findMoveWithType(conn, a0)
+                else:
+                    a1 = input("Type: ")
+                    findMoveWithType(conn, a1)
+            elif (user_input == '8'):
+                a0 = input("Move Name (all/specific): ")
+                if a0 == "all":
+                    findPokemonWithLocation(conn, a0)
+                else:
+                    a1 = input("Location ID: ")
+                    findPokemonWithLocation(conn, a1)
+            elif (user_input == '9'): 
+                a0 = input("Pokemon Type: ")
+                findStrongestPokemon(conn, a0)
 
 
     closeConnection(conn, database)

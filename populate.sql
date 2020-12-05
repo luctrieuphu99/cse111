@@ -100,7 +100,7 @@ VALUES
 (49,"Rock Tunnel", "a naturally formed underground tunnel."),
 (50,"Diglett's Cave", "a long tunnel dug by wild Diglett and Dugtrio in Kanto");
 
-insert into pokeLocation (locationid, name, pokeName)
+insert into pokeLocation (pokeName, locationName, locationId)
 select Location.locationId, Location.name, Pokemon.pokeName
 from Location, Pokemon
 where Location.locationId = Pokemon.locationIndex;
