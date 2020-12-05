@@ -211,6 +211,9 @@ def findMoveWithType(_conn, _type):
             cur.execute(sql)
         else:
             cur.execute(sql, args)
+    except Error as e:
+        _conn.rollback()
+        print(e)
 
 def addTrainer(_conn,_name,_nick,_loc):
     try:
@@ -259,7 +262,10 @@ def findPokemonWithLocation(_conn, _locationID):
             cur.execute(sql, args)
         mytable = from_db_cursor(cur)
         print(mytable)
-        
+    except Error as e:
+        _conn.rollback()
+        print(e)
+
 def deleteTrainer(_conn,_name):
     try:
         sql= """DELETE from Trainer
