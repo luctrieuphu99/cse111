@@ -41,7 +41,6 @@ def pokemonList(_conn):
         _conn.rollback()
         print(e)
 
-<<<<<<< HEAD
 def findPokemonWithSpecies(_conn, _species, _type):
     try:
         if _type == "all":
@@ -61,16 +60,6 @@ def findPokemonWithSpecies(_conn, _species, _type):
         if row == None:
             print("There are no results for this query")
             return
-=======
-def findPokemonWithSpecies(_conn, _species):
-    try:
-        sql = """SELECT *
-                from Pokemon
-                where species = ?
-                """
-        cur = _conn.cursor()
-        args = [_species]
->>>>>>> main
         cur.execute(sql, args)
         mytable = from_db_cursor(cur)
         print(mytable)
@@ -110,24 +99,18 @@ def findPokemon(_conn, _pokemon, _command):
         cur = _conn.cursor()
         args = [_pokemon]
         cur.execute(sql, args)
-<<<<<<< HEAD
         row = cur.fetchone()
         if row == None:
             print("There are no results for this query")
             return
         cur.execute(sql, args)
         mytable = from_db_cursor(cur)
-=======
-        mytable = from_db_cursor(cur)
-        temp = mytable
->>>>>>> main
         print(mytable)
         
     except Error as e:
         _conn.rollback()
         print(e)
 
-<<<<<<< HEAD
 def statsList(_conn):
     try:
         sql= """SELECT *
@@ -282,7 +265,7 @@ def findStrongestPokemon(_conn, _type):
         else:
             sql = """select Pokemon.pokeName, max(attack + defense)
             from Pokemon, Stats
-            where (type1 = ? or type2 = ?)
+            where (type1 = ? or type2 = ?
             and Stats.pokeName = Pokemon.pokeName;"""
             cur = _conn.cursor()
             cur.execute(sql, args)
@@ -317,73 +300,6 @@ MENU = """
   .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****.       10) Exit
   .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(         
    .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.         
-=======
-# def statsList(_conn):
-#     try:
-#         # saving the the maker of the model
-#         if (_command == "yes"):
-#             sql = """SELECT Pokemon.pokeName, 
-#                             weight, 
-#                             height, 
-#                             species, 
-#                             gen, 
-#                             gender, 
-#                             type1, 
-#                             type2, 
-#                             locationIndex, 
-#                             attack, 
-#                             defense,
-#                             hp,
-#                             specialAttack,
-#                             specialDefense,
-#                             speed
-#                     from Pokemon, Stats
-#                     where Pokemon.pokeName = ?
-#                     and Stats.pokeName = Pokemon.pokeName
-#                 """
-#         else:
-#             sql = """SELECT *
-#                     from Pokemon
-#                     where pokeName = ?
-#                     """
-#         cur = _conn.cursor()
-#         args = [_pokemon]
-#         cur.execute(sql, args)
-#         mytable = from_db_cursor(cur)
-#         temp = mytable
-    
-#         print print("row: " + row)
-#         print(temp)
-        
-#     except Error as e:
-#         _conn.rollback()
-#         print(e)
-
-
-# MENU = """
-# -------------- Pokedex ---------------
-
-# 1) Find pokemon
-# 2) do something
-# 3) whatever 
-
-# """
-MENU = """ 
-                                                  
-                 ...*/////////*..                   Please choose one of the following option:
-            ..///////////////////////.              1) Pokemon List
-         ./@@@@@@@@/////////////////////..          2) Find pokemon
-       .&@@@@@@@@@@////////////////////////.        3) Find pokemon with the same species 
-     .//@@@@@@@@@@///////////////////////////.      4) Pokemon Stats
-    .///@@@@@@@&///////////.*****,.///////////.     5) Adding/Delete Trainer
-   .////////////////////.**,#@@@@%,***/////////.    6) 
-  .////////////...********@&@@@@@@%@**./////////. 
-  .///,.*****************.@#@@@@@@&@.*******.///. 
-  .,,**************.....**.@&@@@@#@.************. 
-  .,,,,,.##@@@@@@@@@@@@@@,****,,****.@@@@@,.****. 
-  .(#######@@@@@@@@@@@@@@@@@@(..&@@@@@@@@@@@@@@(  
-   .#########@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.  
->>>>>>> main
     .#########&@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.   
       .##########@@@@@@@@@@@@@@@@@@@@@@@@@@%.     
         .###########&@@@@@@@@@@@@@@@@@@@##.       
@@ -391,25 +307,14 @@ MENU = """
              ..*###################,.             
                     ...........                   
 
-<<<<<<< HEAD
 Your Input: """ 
 
 def main():
     database = r"data.sqlite"
-=======
-Your Input: """
-
-
-
-def main():
-    database = r"data.sqlite"
-
->>>>>>> main
     # create a database connection
     conn = openConnection(database)
     #findPokemon(conn, 'Ekans', 'no')
     with conn:
-<<<<<<< HEAD
         while (user_input := input(MENU)) != "10":
             if user_input == '1':
                 pokemonList(conn)
@@ -456,23 +361,6 @@ def main():
                 findStrongestPokemon(conn, a0)
 
 
-=======
-        while (user_input := input(MENU)) != "7":
-            if user_input == '1':
-                pokemonList(conn)
-            elif (user_input == '2'):
-                pokemon = input("Pokemon Name: ")
-                command = input("Show Stats (yes/no): ")
-                findPokemon(conn, pokemon, command)
-            elif (user_input == '3'):
-                a0 = input("Species Name: ")
-                findPokemonWithSpecies(conn, a0)
-            #elif (user_input == '4'):
-                #statsList(conn)
-
-
-            
->>>>>>> main
     closeConnection(conn, database)
 
 if __name__ == '__main__':
