@@ -265,7 +265,7 @@ def findStrongestPokemon(_conn, _type):
         else:
             sql = """select Pokemon.pokeName, max(attack + defense)
             from Pokemon, Stats
-            where type = ? or type2 = ?
+            where (type1 = ? or type2 = ?)
             and Stats.pokeName = Pokemon.pokeName;"""
             cur = _conn.cursor()
             cur.execute(sql, args)
