@@ -184,48 +184,31 @@ def evolution(_conn,_name,_command):
         _conn.rollback()
         print(e)
 
-def findMoveWithType(_conn, _type):
+def findMoveWithType(_conn, _move, _type):
     try:
-        args = [_type]
-        if _type == "all":
+        if _move == "all":
             sql = """SELECT 
                         type, count(move)
                     FROM Move
+                    where type = ?
                     GROUP BY type;"""
             cur = _conn.cursor()
-            cur.execute(sql)
+            args = [_type]
         else:
             sql = """SELECT 
                         type, count(move)
                     FROM Move
                     WHERE type = ?
+                    and move = ?
                     GROUP BY type;"""
             cur = _conn.cursor()
-            cur.execute(sql, args)
-        
+            args = [_type, _move]
+        cur.execute(sql, args)
         row = cur.fetchone()
         if row == None:
             print("There are no results for this query")
             return
-        if _type == "all":
-            cur.execute(sql)
-        else:
-            cur.execute(sql, args)
-    except Error as e:
-        _conn.rollback()
-        print(e)
-
-def addTrainer(_conn,_name,_nick,_loc):
-    try:
-        sql= """INSERT into Trainer
-                VALUES (?,?,?) 
-                """
-        args = [_name,_nick,_loc]
-        cur = _conn.cursor()        
         cur.execute(sql, args)
-        sql= """SELECT * from Trainer
-                """
-        cur.execute(sql)
         mytable = from_db_cursor(cur)
         print(mytable)
         
@@ -238,125 +221,18 @@ def findPokemonWithLocation(_conn, _locationID):
         args = [_locationID]
         if _locationID == "all":
             sql = """SELECT 
-                        type, count(move)
-                    FROM Move
-                    GROUP BY type;"""
+                        Location.locationId, Location.name, Pokemon.pokeName
+                    FROM Pokemon, Location
+                    WHERE Pokemon.locationIndex = Location.locationId;"""
             cur = _conn.cursor()
             cur.execute(sql)
         else:
             sql = """SELECT 
-                        type, count(move)
-                    FROM Move
-                    WHERE type = ?
-                    GROUP BY type;"""
-            cur = _conn.cursor()
-            cur.execute(sql, args)
-        
-        row = cur.fetchone()
-        if row == None:
-            print("There are no results for this query")
-            return
-        if _locationID == "all":
-            cur.execute(sql)
-        else:
-            cur.execute(sql, args)
-        mytable = from_db_cursor(cur)
-        print(mytable)
-    except Error as e:
-        _conn.rollback()
-        print(e)
-
-def deleteTrainer(_conn,_name):
-    try:
-        sql= """DELETE from Trainer
-                WHERE name = ?
-                """
-        args = [_name]
-        cur = _conn.cursor()
-        cur.execute(sql, args)
-        sql= """SELECT * from Trainer
-                """
-        cur.execute(sql)
-        mytable = from_db_cursor(cur)
-        print(mytable)
-    except Error as e:
-        _conn.rollback()
-        print(e)
-
-def evolution(_conn,_name,_command):
-    try:
-        if _command == "evolve":
-            sql= """SELECT *
-                    FROM Evolution
-                    WHERE pokeName = ?
-                    """
-        elif _command == "devolve":
-            sql= """SELECT *
-                    FROM Evolution
-                    WHERE evoName = ?
-                    """
-        else:
-            print("Invalid command")
-            return
-        args = [_name]
-        cur = _conn.cursor()
-        cur.execute(sql, args)
-        mytable = from_db_cursor(cur)
-        print(mytable)
-    except Error as e:
-        _conn.rollback()
-        print(e)
-
-def findMoveWithType(_conn, _type):
-    try:
-        args = [_type]
-        if _type == "all":
-            sql = """SELECT 
-                        type, count(move)
-                    FROM Move
-                    GROUP BY type;"""
-            cur = _conn.cursor()
-            cur.execute(sql)
-        else:
-            sql = """SELECT 
-                        type, count(move)
-                    FROM Move
-                    WHERE type = ?
-                    GROUP BY type;"""
-            cur = _conn.cursor()
-            cur.execute(sql, args)
-        
-        row = cur.fetchone()
-        if row == None:
-            print("There are no results for this query")
-            return
-        if _type == "all":
-            cur.execute(sql)
-        else:
-            cur.execute(sql, args)
-        mytable = from_db_cursor(cur)
-        print(mytable)
-        
-    except Error as e:
-        _conn.rollback()
-        print(e)
-
-def findPokemonWithLocation(_conn, _locationID):
-    try:
-        args = [_locationID]
-        if _locationID == "all":
-            sql = """SELECT 
-                        type, count(move)
-                    FROM Move
-                    GROUP BY type;"""
-            cur = _conn.cursor()
-            cur.execute(sql)
-        else:
-            sql = """SELECT 
-                        type, count(move)
-                    FROM Move
-                    WHERE type = ?
-                    GROUP BY type;"""
+                        Location.locationId, Location.name, Pokemon.pokeName
+                    FROM Pokemon, Location
+                    WHERE Pokemon.locationIndex = Location.locationId
+                    and Location.locationId = ?"""
+                    
             cur = _conn.cursor()
             cur.execute(sql, args)
         
@@ -466,18 +342,11 @@ def main():
                 evolution(conn,a0,a1)
             elif (user_input == '7'):
                 a0 = input("Move Name (all/specific): ")
-                if a0 == "all":
-                    findMoveWithType(conn, a0)
-                else:
-                    a1 = input("Type: ")
-                    findMoveWithType(conn, a1)
+                a1 = input("Type: ")
+                findMoveWithType(conn, a0, a1)
             elif (user_input == '8'):
-                a0 = input("Move Name (all/specific): ")
-                if a0 == "all":
-                    findPokemonWithLocation(conn, a0)
-                else:
-                    a1 = input("Location ID: ")
-                    findPokemonWithLocation(conn, a1)
+                a0 = input("Location ID (all/specific): ")
+                findPokemonWithLocation(conn, a0)
             elif (user_input == '9'): 
                 a0 = input("Pokemon Type: ")
                 findStrongestPokemon(conn, a0)

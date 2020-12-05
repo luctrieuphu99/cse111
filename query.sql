@@ -40,14 +40,12 @@ select count(Move.move)
 from Move
 where type = 'normal';
 
-<<<<<<< HEAD
-select 
-Move.type, count(Move.move)
+select type, count(move)
 from Move
+where type = "grass"
+and move = "Absorb"
 group by type;
 
-=======
->>>>>>> main
 -- 7. display the count of pokemon in the location sorted by count desc
 select LivingLocation.name, count(*)
 from LivingLocation
