@@ -323,8 +323,8 @@ def main():
                 command = input("Show Stats (yes/no): ")
                 findPokemon(conn, pokemon, command)
             elif (user_input == '4'):
-                a0 = input("Species Name (all/specific): ")
-                a1 = input("Type: ")
+                a0 = input("Species Name: ")
+                a1 = input("Type (all/specific): ")
                 findPokemonWithSpecies(conn, a0, a1)
             elif (user_input == '5'):
                 a0 = input("add/delete: ")
