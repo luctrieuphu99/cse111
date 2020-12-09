@@ -138,7 +138,8 @@ def addTrainer(_conn,_name,_nick,_loc):
         cur.execute(sql)
         mytable = from_db_cursor(cur)
         print(mytable)
-        
+        _conn.commit()
+
     except Error as e:
         _conn.rollback()
         print(e)
@@ -156,6 +157,8 @@ def deleteTrainer(_conn,_name):
         cur.execute(sql)
         mytable = from_db_cursor(cur)
         print(mytable)
+        _conn.commit()
+
     except Error as e:
         _conn.rollback()
         print(e)
